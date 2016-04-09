@@ -17,4 +17,6 @@
     <string name="maghrib">المغرب</string>
     <string name="sunrise">الشروق</string>
     <string name="en">English</string>
+    <string name="credit">تم باستخدام أكواد من  www.praytimes.org</string>
+
 </resources>

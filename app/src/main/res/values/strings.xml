@@ -18,5 +18,6 @@
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha\'a</string>
     <string name="en">العربية</string>
+    <string name="credit">Made Possible with the help of code forked from www.praytimes.org</string>
 
 </resources>

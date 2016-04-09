@@ -17,9 +17,9 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
-    //a Calender Object for my calcualtions
+    //a Calender Object for my calculations
     Calendar cal = Calendar.getInstance();
-    // new Prayer obeject which is responsable for prayer calcuations
+    // new Prayer Object which is responsible for prayer calculations
     PrayTime prayers = new PrayTime();
 
 
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     TextView magrb = null;
     TextView isha = null;
 
-    //hopfully will be able to pull the location from the device with LocationManager
+    //hopefully will be able to pull the location from the device with LocationManager
     double latitude = 30;
     double longitude = 31;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // getLocation(); //the method responsible for changing LonLat values
 
-        //linking the pre-initiated textviews objects with the ones from the layout
+        //linking the pre-initiated TextViews objects with the ones from the layout
         day = (TextView) findViewById(R.id.day);
         fajr = (TextView) findViewById(R.id.fagrv);
         shoroq = (TextView) findViewById(R.id.shroqv);
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         magrb = (TextView) findViewById(R.id.maghrbv);
         isha = (TextView) findViewById(R.id.ishav);
 
-// new geocoder object to get the countery, city of the location pulled from device
+// new GeoCoder object to get the country, city of the location pulled from device
         Geocoder geocoder;
         geocoder = new Geocoder(this, Locale.getDefault());
 
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Timezone: " + (int) timezone, Toast.LENGTH_LONG).show();
         Toast.makeText(this, "City: " + city + " " + state + " " + country, Toast.LENGTH_LONG).show();
 
-        // all remaning variables to calc the times
+        // all remaining variables to calc the times
         prayers.setCalcMethod(prayers.Egypt); //Egypt Method
         prayers.setAsrJuristic(prayers.Shafii); //Shafii method for Asr
         prayers.setAdjustHighLats(prayers.AngleBased); // AngleBased Method for Altitude
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         cal.getTime();  //calculating
         ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal,
                 latitude, longitude, timezone);
-//printing each Prayer time to its corisponding texview
+//printing each Prayer time to its appropriate TexView
         fajr.setText(prayerTimes.get(0));
         shoroq.setText(prayerTimes.get(1));
         dohr.setText(prayerTimes.get(2));

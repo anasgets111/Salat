@@ -1,4 +1,3 @@
-
 //--------------------- Copyright Block ----------------------
 /*
 PrayTime.java: Prayer Times Calculator (ver 1.0)
@@ -15,7 +14,6 @@ This program is distributed in the hope that it will
 be useful, but WITHOUT ANY WARRANTY.
 PLEASE DO NOT REMOVE THIS COPYRIGHT BLOCK.
 */
-
 
 
 package com.gmail.anasgets.salat;
