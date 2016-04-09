@@ -18,6 +18,9 @@
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha\'a</string>
     <string name="en">العربية</string>
+    <string name="ar">English</string>
     <string name="credit">Made Possible with the help of code forked from www.praytimes.org</string>
+    <string name="ok">OK</string>
+    <string name="permission_contacts_rationale">Contacts permissions are needed to demonstrate access.</string>
 
 </resources>
