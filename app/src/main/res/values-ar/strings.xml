@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">مواقيت الصلاة</string>
+    <string name="text1">مواقيت الصلاة عن يوم: </string>
+
+    <string name="Friday">الجمعة</string>
+    <string name="Monday">الإثينين</string>
+    <string name="Saturday">السبت</string>
+    <string name="Sunday">الأحد</string>
+    <string name="Thursday">الخميس</string>
+    <string name="Tuesday">الثلاثاء</string>
+    <string name="Wednesday">الأربعاء</string>
+    <string name="asr">العصر</string>
+    <string name="dhuhr">الظهر</string>
+    <string name="fajr">الفجر</string>
+    <string name="isha">العشاء</string>
+    <string name="maghrib">المغرب</string>
+    <string name="sunrise">الشروق</string>
+    <string name="en">English</string>
+</resources>
