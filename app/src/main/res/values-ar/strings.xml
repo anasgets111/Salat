@@ -16,7 +16,9 @@
     <string name="isha">العشاء</string>
     <string name="maghrib">المغرب</string>
     <string name="sunrise">الشروق</string>
-    <string name="en">English</string>
     <string name="credit">تم باستخدام أكواد من  www.praytimes.org</string>
+    <string name="ok">موافق</string>
+    <string name="permission_contacts_rationale"> يجب السماح الحصول على الموقع لحساب مواقيت الصلاة</string>
+
 
 </resources>
