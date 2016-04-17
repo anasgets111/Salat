@@ -22,5 +22,9 @@
     <string name="credit">Made Possible with the help of code forked from www.praytimes.org</string>
     <string name="ok">OK</string>
     <string name="permission_contacts_rationale">Contacts permissions are needed to demonstrate access.</string>
+    <string name="empty">Empty Address, check GPS</string>
+    <string name="city">City: </string>
+    <string name="timezone">Timezone: </string>
+    <string name="preference_file_key">  </string>
 
 </resources>

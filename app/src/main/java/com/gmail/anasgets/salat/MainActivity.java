@@ -1,18 +1,18 @@
 package com.gmail.anasgets.salat;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,16 +23,21 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_CONTACTS = 1;
-    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.ACCESS_FINE_LOCATION};
+public class MainActivity extends Activity {
+
+
+    //Switch object for UI Language
+    Switch langS; //= null;
     //a Calender Object for my calculations
     Calendar cal = Calendar.getInstance();
     // new Prayer Object which is responsible for prayer calculations
     PrayTime prayers = new PrayTime();
+
+    // geting the timezone , as its the 3rd var needed
+    double timezone = prayers.getBaseTimeZone();
+
     // initiate holders for the text views to change
     TextView day = null;
-
     //Switch local = null;
     TextView fajr = null;
     TextView shoroq = null;
@@ -41,119 +46,74 @@ public class MainActivity extends AppCompatActivity {
     TextView magrb = null;
     TextView isha = null;
     //hopefully will be able to pull the location from the device with LocationManager
-    double latitude = 1;
-    double longitude = 1;
-    private final LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-        }
+    double latitude = 30;
+    double longitude = 30;
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void toast(String msg) {
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
 
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-    private View mLayout;
-
-    public boolean getLocation() {
-
-
-        // Verify that all required contact permissions have been granted.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Contacts permissions have not been granted.
-
-            requestPermission();
-            return true;
-        } else {
-
-            // Contact permissions have been granted. Show the contacts fragment.
-            showLocation();
-            return false;
-        }
+        Toast toast = Toast.makeText(context, msg, duration);
+        toast.show();
     }
 
-    /**
-     * Requests the Contacts permissions.
-     * If the permission has been denied previously, a SnackBar will prompt the user to grant the
-     * permission, otherwise it is requested directly.
-     */
-    private void requestPermission() {
-        // BEGIN_INCLUDE(contacts_permission_request)
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
+    public void setLocale(String lang) {
+        Locale myLocale = new Locale(lang);
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+        res.updateConfiguration(conf, dm);
+        Intent refresh = new Intent(this, MainActivity.class);
+        startActivity(refresh);
+        finish();
 
-            // Provide an additional rationale to the user if the permission was not granted
-            // and the user would benefit from additional context for the use of the permission.
-            // For example, if the request has been denied previously.
-
-
-            // Display a SnackBar with an explanation and a button to trigger the request.
-
-
-            Snackbar.make(mLayout, R.string.permission_contacts_rationale,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ActivityCompat
-                                    .requestPermissions(MainActivity.this, PERMISSIONS_CONTACT,
-                                            REQUEST_CONTACTS);
-                        }
-                    })
-                    .show();
-        } else {
-            // Contact permissions have not been granted yet. Request them directly.
-            ActivityCompat.requestPermissions(this, PERMISSIONS_CONTACT, REQUEST_CONTACTS);
-        }
-        // END_INCLUDE(contacts_permission_request)
-    }
-
-    private void showLocation() {
-
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 60 * 1000, 1000, locationListener);
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
 
     }
 
-
-
-
-
-
-
-
-
-
-
+    /*
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onConfigurationChanged(Configuration newConfig) {
+            newConfig.setLocale(Locale.forLanguageTag("ar"));
+            super.onConfigurationChanged(newConfig);
+        }
+    */
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLayout = findViewById(R.id.sample_main_layout);
+        SharedPreferences sharedPrefs = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE);
+        langS = (Switch) findViewById(R.id.switch1);
 
 
-        //the method responsible for changing LonLat values
-        getLocation();
+        langS.setChecked(sharedPrefs.getBoolean("LangStatus", false));
+
+        //attach a listener to check for changes in state
+        langS.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+
+                if (isChecked) {
+                    SharedPreferences.Editor editor = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE).edit();
+                    editor.putBoolean("LangStatus", true);
+                    editor.apply();
+                    setLocale("ar");
+                    getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+
+                } else {
+                    SharedPreferences.Editor editor = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE).edit();
+                    editor.putBoolean("LangStatus", false);
+                    editor.apply();
+                    setLocale("en");
+                }
+
+            }
+        });
+
 
         //linking the pre-initiated TextViews objects with the ones from the layout
         day = (TextView) findViewById(R.id.day);
@@ -180,28 +140,6 @@ public class MainActivity extends AppCompatActivity {
 */
 
 
-// new GeoCoder object to get the country, city of the location pulled from device
-        Geocoder geocoder;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        List<Address> addresses = null; // Here 1 represent max location result to returned, by documents it recommended 1 to 5;
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        // If any additional address line present than only,
-        // check with max available address lines by getMaxAddressLineIndex()
-
-        String city = addresses.get(0).getAddressLine(2);
-        String state = addresses.get(0).getAddressLine(3);
-        String country = addresses.get(0).getCountryName();
-
-// geting the timezone , as its the 3rd var needed
-        double timezone = prayers.getBaseTimeZone();
-
         //a switch case to print the day name
         switch (Calendar.DAY_OF_WEEK) {
             case 0:
@@ -227,12 +165,47 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
-//setting time to 12H per default
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        // new GeoCoder object to get the country, city of the location pulled from device
+        Geocoder geocoder;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses = null; // Here 1 represent max location result to returned, by documents it recommended 1 to 5;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        // If any additional address line present than only,
+        // check with max available address lines by getMaxAddressLineIndex()
+        if (addresses != null) {
+            String city = addresses.get(0).getAddressLine(2);
+            String state = addresses.get(0).getAddressLine(3);
+            String country = addresses.get(0).getCountryName();
+            toast(this.getString(R.string.city) + " " + city + " " + state + " " + country);
+        } else {
+            toast(this.getString(R.string.empty));
+        }
+
+        //setting time to 12H per default
         prayers.setTimeFormat(prayers.Time12);
 
 //printint timezone and City in a toast message
-        Toast.makeText(this, "Timezone: " + (int) timezone, Toast.LENGTH_LONG).show();
-        Toast.makeText(this, "City: " + city + " " + state + " " + country, Toast.LENGTH_LONG).show();
+        if (timezone > 0) {
+            toast(getString(R.string.timezone) + " +" + (int) timezone);
+        } else {
+            toast(getString(R.string.timezone) + " " + (int) timezone);
+        }
 
         // all remaining variables to calc the times
         prayers.setCalcMethod(prayers.Egypt); //Egypt Method
@@ -254,10 +227,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
 }
-
-
-
-
-
