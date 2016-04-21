@@ -31,7 +31,6 @@ import java.util.Locale;
 
 public class MainActivity extends Activity {
 
-
     //Switch object for UI Language
     Switch langS; //= null;
     //a Calender Object for my calculations
@@ -58,7 +57,6 @@ public class MainActivity extends Activity {
     public void toast(String msg) {
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;
-
         Toast toast = Toast.makeText(context, msg, duration);
         toast.show();
     }
@@ -73,9 +71,7 @@ public class MainActivity extends Activity {
         Intent refresh = new Intent(this, MainActivity.class);
         startActivity(refresh);
         finish();
-
     }
-
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPerm() {
@@ -100,24 +96,18 @@ public class MainActivity extends Activity {
                             }
                         })
                 ;
-
             }
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_CODE_ASK_PERMISSIONS);
         }
-
-
     }
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkPerm();
-
+        //checkPerm();
 
         SharedPreferences sharedPrefs = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE);
 
@@ -125,9 +115,7 @@ public class MainActivity extends Activity {
             getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         }
 
-
         langS = (Switch) findViewById(R.id.switch1);
-
 
         langS.setChecked(sharedPrefs.getBoolean("LangStatus", false));
 
@@ -137,7 +125,6 @@ public class MainActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
-
                 if (isChecked) {
                     SharedPreferences.Editor editor = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE).edit();
                     editor.putBoolean("LangStatus", true);
@@ -149,10 +136,8 @@ public class MainActivity extends Activity {
                     editor.apply();
                     setLocale("en");
                 }
-
             }
         });
-
 
         //linking the pre-initiated TextViews objects with the ones from the layout
         day = (TextView) findViewById(R.id.day);
@@ -162,7 +147,6 @@ public class MainActivity extends Activity {
         asr = (TextView) findViewById(R.id.asrv);
         magrb = (TextView) findViewById(R.id.maghrbv);
         isha = (TextView) findViewById(R.id.ishav);
-
 
         //a switch case to print the day name
         switch (Calendar.DAY_OF_WEEK) {
@@ -193,7 +177,6 @@ public class MainActivity extends Activity {
             dohrTitle.setText(getString(R.string.dohrT));
         }
 
-
         // new GeoCoder object to get the country, city of the location pulled from device
         Geocoder geocoder;
         geocoder = new Geocoder(this, Locale.getDefault());
@@ -204,7 +187,6 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             onResume();
         }
-
 
         // If any additional address line present than only,
         // check with max available address lines by getMaxAddressLineIndex()
@@ -220,7 +202,7 @@ public class MainActivity extends Activity {
         //setting time to 12H per default
         prayers.setTimeFormat(prayers.Time12);
 
-//printint timezone and City in a toast message
+        //printint timezone and City in a toast message
         if (timezone > 0) {
             toast(getString(R.string.timezone) + " +" + (int) timezone);
         } else {
@@ -229,33 +211,23 @@ public class MainActivity extends Activity {
 
         // all remaining variables to calc the times
 
-
         prayers.setCalcMethod(prayers.Egypt); //Egypt Method
         prayers.setAsrJuristic(prayers.Shafii); //Shafii method for Asr
         prayers.setAdjustHighLats(prayers.AngleBased); // AngleBased Method for Altitude
 
-
         int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);
 
-
         cal.getTime();  //calculating
-
 
         ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal,
                 latitude, longitude, timezone);
-//printing each Prayer time to its appropriate TexView
+        //printing each Prayer time to its appropriate TexView
         fajr.setText(prayerTimes.get(0));
         shoroq.setText(prayerTimes.get(1));
         dohr.setText(prayerTimes.get(2));
         asr.setText(prayerTimes.get(3));
         magrb.setText(prayerTimes.get(5));
         isha.setText(prayerTimes.get(6));
-
-
     }
-
-
-
-
 }
