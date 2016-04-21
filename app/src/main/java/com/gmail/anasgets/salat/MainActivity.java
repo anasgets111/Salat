@@ -1,13 +1,19 @@
 package com.gmail.anasgets.salat;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -38,9 +44,9 @@ public class MainActivity extends Activity {
 
     // initiate holders for the text views to change
     TextView day = null;
-    //Switch local = null;
     TextView fajr = null;
     TextView shoroq = null;
+    TextView dohrTitle = null;
     TextView dohr = null;
     TextView asr = null;
     TextView magrb = null;
@@ -68,23 +74,58 @@ public class MainActivity extends Activity {
         startActivity(refresh);
         finish();
 
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkPerm() {
+        final int REQUEST_CODE_ASK_PERMISSIONS = 123;
+        int hasWriteContactsPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                new AlertDialog.Builder(getApplicationContext()).setTitle("Alert").setMessage(getString(R.string.alert))
+
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        REQUEST_CODE_ASK_PERMISSIONS);
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                ;
+
+            }
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+        }
+
 
     }
 
-    /*
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onConfigurationChanged(Configuration newConfig) {
-            newConfig.setLocale(Locale.forLanguageTag("ar"));
-            super.onConfigurationChanged(newConfig);
-        }
-    */
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        checkPerm();
+
+
         SharedPreferences sharedPrefs = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE);
+
+        if (sharedPrefs.getBoolean("LangStatus", false)) {
+            getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+
+
         langS = (Switch) findViewById(R.id.switch1);
 
 
@@ -102,8 +143,6 @@ public class MainActivity extends Activity {
                     editor.putBoolean("LangStatus", true);
                     editor.apply();
                     setLocale("ar");
-                    getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
                 } else {
                     SharedPreferences.Editor editor = getSharedPreferences("com.gmail.anasgets.salat", MODE_PRIVATE).edit();
                     editor.putBoolean("LangStatus", false);
@@ -123,21 +162,6 @@ public class MainActivity extends Activity {
         asr = (TextView) findViewById(R.id.asrv);
         magrb = (TextView) findViewById(R.id.maghrbv);
         isha = (TextView) findViewById(R.id.ishav);
-
-
-/*
-        local = (Switch) findViewById(R.id.switch1);
-        local.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(view.getContext(), MainActivity.class);
-                startActivity(i);
-                local.getTextOn();
-            }
-        });
-
-*/
 
 
         //a switch case to print the day name
@@ -164,14 +188,10 @@ public class MainActivity extends Activity {
                 day.setText(R.string.Saturday);
                 break;
         }
-
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        if (day.getText() == getString(R.string.Friday)) {
+            dohrTitle = (TextView) findViewById(R.id.dhort);
+            dohrTitle.setText(getString(R.string.dohrT));
+        }
 
 
         // new GeoCoder object to get the country, city of the location pulled from device
@@ -182,7 +202,7 @@ public class MainActivity extends Activity {
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
-            e.printStackTrace();
+            onResume();
         }
 
 
@@ -208,12 +228,20 @@ public class MainActivity extends Activity {
         }
 
         // all remaining variables to calc the times
+
+
         prayers.setCalcMethod(prayers.Egypt); //Egypt Method
         prayers.setAsrJuristic(prayers.Shafii); //Shafii method for Asr
         prayers.setAdjustHighLats(prayers.AngleBased); // AngleBased Method for Altitude
+
+
         int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);
+
+
         cal.getTime();  //calculating
+
+
         ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal,
                 latitude, longitude, timezone);
 //printing each Prayer time to its appropriate TexView
@@ -226,5 +254,8 @@ public class MainActivity extends Activity {
 
 
     }
+
+
+
 
 }

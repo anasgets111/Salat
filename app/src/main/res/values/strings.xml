@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Prayer Times</string>
-
     <string name="Saturday">Saturday</string>
     <string name="Sunday">Sunday</string>
     <string name="Monday">Monday</string>
@@ -8,8 +7,6 @@
     <string name="Wednesday"> Wednesday</string>
     <string name="Thursday">Thursday</string>
     <string name="Friday">Friday</string>
-
-
     <string name="text1">Prayer times for:  </string>
     <string name="fajr">Fajr</string>
     <string name="sunrise">Sunrise</string>
@@ -18,7 +15,6 @@
     <string name="maghrib">Maghrib</string>
     <string name="isha">Isha\'a</string>
     <string name="en">العربية</string>
-    <string name="ar">English</string>
     <string name="credit">Made Possible with the help of code forked from www.praytimes.org</string>
     <string name="ok">OK</string>
     <string name="permission_contacts_rationale">Contacts permissions are needed to demonstrate access.</string>
@@ -26,5 +22,8 @@
     <string name="city">City: </string>
     <string name="timezone">Timezone: </string>
     <string name="preference_file_key">  </string>
+    <string name="alert">With your permission MyPrayer will get you location.</string>
+    <string name="cancel">Cancel</string>
+    <string name="dohrT">Jumuah</string>
 
 </resources>
